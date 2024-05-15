@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page - Flask MQTT</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/home.css')}}">
+    <script src="{{url_for('static', filename='js/home.js')}}"></script>
+</head>
+<body>
+    <h1>BEM VINDO</h1>
+    <h1>MQTT SocketIO</h1>
+    <button onclick="subscribe()">Subscribe</button>
+    <button onclick="unsubscribe()">Unsubscribe</button>
+    <button onclick="connectMQTT()">Connect MQTT</button>
+    
+    <div class="container">
+        <h3>Items Temperatura</h3>
+        <ul id="dados-temperatura">
+            <!-- {% for item in temps %}
+            <li>{{item.id}} - {{ item.local }} - {{ item.value }}</li>
+            {% endfor %} -->
+        </ul>
+    </div>
+
+    <script>
+        async function atualizaDados() {
+            try {
+                const response = await fetch('/atualizar-dados-temp')
+                const data = await response.json()
+
+                const listaTemp = document.getElementById('dados-temperatura')
+                listaTemp.innerHTML = '';
+
+                data.forEach(valueItem => {
+                    const li = document.createElement('li')
+                    li.textContent = `${valueItem.local} - ${valueItem.value}`
+                    listaTemp.appendChild(li)
+                })
+            } catch(error) {
+                console.error('Erro ao atualizar dados.', error)
+            }
+        }
+        setInterval(atualizaDados, 1000);
+    </script>
+</body>
+</html>
